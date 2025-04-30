@@ -1,26 +1,51 @@
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./routes/Home";
+import LoginPage from "./routes/Login";
+import ProductPage from "./routes/Products";
+import RegisterPage from "./routes/Register";
+import ProductDetailsPage from "./routes/ProductsDetails";
+import AddNewProductPage from "./routes/AddNewProduct";
+import PrivateRoute from "./routes/PrivateRoute";
+import MainLayout from "./layouts/MainLayout";
+import PublicLayout from "./layouts/PublicLayout";
 import "./App.css";
-import Header, { name } from "./components/Header";
-import ProductList from "./components/product/ProductList";
-import LoginForm from "./components/Forms/LoginForm";
-import RegisterForm from "./components/Forms/RegisterForm";
-import AddNewProductForm from "./components/Forms/AddNewProductForm";
-
-const mockAddress = {
-  city: "Toruń",
-};
 
 function App() {
   return (
-    <>
-      <div>
-        <p>{name}</p>
-        <Header address={mockAddress} />
-        <ProductList />
-        <LoginForm />
-        <RegisterForm />
-        <AddNewProductForm />
-      </div>
-    </>
+    <Routes>
+      <Route element={<PublicLayout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
+
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route
+          path="products"
+          element={
+            <PrivateRoute>
+              <ProductPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="product/:id"
+          element={
+            <PrivateRoute>
+              <ProductDetailsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="new"
+          element={
+            <PrivateRoute>
+              <AddNewProductPage />
+            </PrivateRoute>
+          }
+        />
+      </Route>
+    </Routes>
   );
 }
 

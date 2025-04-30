@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import axios from "axios";
 
 const yupSchema = yup.object().shape({
   username: yup
@@ -33,11 +34,13 @@ export default function RegisterForm() {
   const [apiError, setApiError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: yupResolver(yupSchema) });
 
@@ -45,31 +48,27 @@ export default function RegisterForm() {
     setApiError(null);
     setSuccess(null);
     setIsFormSubmitting(true);
-    console.log("Dane formularza", data);
+
     try {
       const response = await axios.post("https://fakestoreapi.com/users", data);
       if (response) {
         setSuccess(true);
         reset();
+        navigate("/login", { state: { fromRegister: true } });
       }
       setIsFormSubmitting(false);
-      console.log(response);
     } catch (e) {
-      if (e.status === 401) {
-        setApiError("Dane rejestracyjne są niepoprawne");
-      } else {
-        setApiError("Wystąpił nieznany błąd");
-      }
+      setApiError("Wystąpił błąd podczas rejestracji");
       setIsFormSubmitting(false);
-      console.log(e);
     }
   };
+
   const password = watch("password");
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 mt-10 w-1/2 mx-auto border p-4"
+      className="space-y-4 mx-auto border p-4"
     >
       <h1>Rejestracja</h1>
 
@@ -148,11 +147,10 @@ export default function RegisterForm() {
       </div>
 
       {apiError && <p className="font-bold text-red-500">{apiError}</p>}
-      {success && <p className="font-bold text-red-500">Sukces</p>}
 
       <button
         type="submit"
-        className="btn btn-primary"
+        className="btn btn-primary block mx-auto"
         disabled={isSubmitting || isFormSubmitting}
       >
         Zarejestruj się

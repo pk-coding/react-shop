@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import axios from "axios";
 
 const yupSchema = yup.object().shape({
   username: yup.string().required("Pole username jest wymagane"),
@@ -11,8 +12,8 @@ const yupSchema = yup.object().shape({
 
 export default function LoginForm() {
   const [apiError, setApiError] = useState(null);
-  const [success, setSuccess] = useState(null);
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -23,40 +24,31 @@ export default function LoginForm() {
 
   const onSubmit = async (data) => {
     setApiError(null);
-    setSuccess(null);
     setIsFormSubmitting(true);
-    console.log("Dane formularza", data);
+
     try {
       const response = await axios.post(
         "https://fakestoreapi.com/auth/login",
         data
       );
-      if (response) {
-        setSuccess(true);
+      if (response.data.token) {
+        localStorage.setItem("AuthToken", response.data.token);
         reset();
+        navigate("/products", { state: { fromLogin: true } });
       }
       setIsFormSubmitting(false);
-      console.log(response);
     } catch (e) {
-      if (e.status === 401) {
-        setApiError(
-          "Dane logowania są niepoprawne lub użytkownik nie istnieje"
-        );
-      } else {
-        setApiError("Wystąpił nieznany błąd");
-      }
+      setApiError("Dane logowania są niepoprawne");
       setIsFormSubmitting(false);
-      console.log(e);
     }
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 mt-10 w-1/2 mx-auto border p-4"
+      className="space-y-4 mt-10 mx-auto border p-4"
     >
       <h1>Logowanie</h1>
-
       <div className="flex flex-col">
         <label>Username</label>
         <input
@@ -90,11 +82,10 @@ export default function LoginForm() {
       </div>
 
       {apiError && <p className="font-bold text-red-500">{apiError}</p>}
-      {success && <p className="font-bold text-red-500">Sukces</p>}
 
       <button
         type="submit"
-        className="btn btn-primary"
+        className="btn btn-primary block mx-auto"
         disabled={isSubmitting || isFormSubmitting}
       >
         Zaloguj się

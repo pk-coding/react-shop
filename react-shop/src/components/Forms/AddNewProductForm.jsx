@@ -38,7 +38,7 @@ export default function AddNewProductForm() {
   const [success, setSuccess] = useState(null);
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
 
-  // eact-hook-form
+  // react-hook-form
   const {
     register,
     handleSubmit,
@@ -88,7 +88,7 @@ export default function AddNewProductForm() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       onMouseLeave={handleMouseLeave}
-      className="space-y-4 mt-10 w-1/2 mx-auto border p-4"
+      className="space-y-4 mt-10 mx-auto border p-4"
     >
       <h1>Dodaj nowy produkt</h1>
 
