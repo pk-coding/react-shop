@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useAuth } from "../../hooks/useAuth";
 
 const yupSchema = yup.object().shape({
   username: yup.string().required("Pole username jest wymagane"),
@@ -14,6 +15,7 @@ export default function LoginForm() {
   const [apiError, setApiError] = useState(null);
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const {
     register,
@@ -31,14 +33,16 @@ export default function LoginForm() {
         "https://fakestoreapi.com/auth/login",
         data
       );
+
       if (response.data.token) {
-        localStorage.setItem("AuthToken", response.data.token);
+        const fakeUser = { username: data.username };
+        login(response.data.token, fakeUser);
         reset();
         navigate("/products", { state: { fromLogin: true } });
       }
-      setIsFormSubmitting(false);
-    } catch (e) {
+    } catch {
       setApiError("Dane logowania są niepoprawne");
+    } finally {
       setIsFormSubmitting(false);
     }
   };
@@ -46,42 +50,47 @@ export default function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 mt-10 mx-auto border p-4"
+      className="space-y-4 mt-10 mx-auto border p-4 max-w-md"
     >
-      <h1>Logowanie</h1>
+      <h1 className="text-xl font-bold text-center">Logowanie</h1>
+
       <div className="flex flex-col">
-        <label>Username</label>
+        <label htmlFor="username">Username</label>
         <input
+          id="username"
           autoFocus
-          {...register("username", { required: "Username jest wymagany" })}
-          className={
-            errors.username
-              ? "border border-red-500 p-2 rounded"
-              : "border border-gray-500 p-2 rounded"
-          }
+          {...register("username")}
+          className={`p-2 rounded border ${
+            errors.username ? "border-red-500" : "border-gray-500"
+          }`}
         />
         {errors.username && (
-          <span className="text-red-500">{errors.username.message}</span>
+          <span className="text-red-500 text-sm">
+            {errors.username.message}
+          </span>
         )}
       </div>
 
       <div className="flex flex-col">
-        <label>Hasło</label>
+        <label htmlFor="password">Hasło</label>
         <input
+          id="password"
           type="password"
-          {...register("password", { required: "Hasło jest wymagane." })}
-          className={
-            errors.password
-              ? "border border-red-500 p-2 rounded"
-              : "border border-gray-500 p-2 rounded"
-          }
+          {...register("password")}
+          className={`p-2 rounded border ${
+            errors.password ? "border-red-500" : "border-gray-500"
+          }`}
         />
         {errors.password && (
-          <span className="text-red-500">{errors.password.message}</span>
+          <span className="text-red-500 text-sm">
+            {errors.password.message}
+          </span>
         )}
       </div>
 
-      {apiError && <p className="font-bold text-red-500">{apiError}</p>}
+      {apiError && (
+        <p className="text-red-500 text-center font-semibold">{apiError}</p>
+      )}
 
       <button
         type="submit"

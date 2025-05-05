@@ -1,21 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
-export function useAuth() {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("AuthToken")
-  );
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setIsAuthenticated(!!localStorage.getItem("AuthToken"));
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
-
-  return { isAuthenticated };
-}
+export const useAuth = () => useContext(AuthContext);

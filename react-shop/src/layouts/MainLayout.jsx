@@ -6,13 +6,13 @@ const name = "Paweł K.";
 const address = { address: "Toruń" };
 
 const MainLayout = () => {
-  const { isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
   return (
     <>
       <header className="flex items-center p-4 bg-gray-200">
         <div className="w-1/2 flex justify-start">
-          {isAuthenticated ? (
+          {user ? (
             <>
               <NavLink to="/" className="mr-4">
                 Home
@@ -40,7 +40,7 @@ const MainLayout = () => {
         </div>
       </header>
 
-      {isAuthenticated ? <LogontButton /> : ""}
+      {user ? <LogontButton /> : ""}
 
       <main className="p-4">
         <Outlet />

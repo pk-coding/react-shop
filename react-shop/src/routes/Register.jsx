@@ -5,13 +5,13 @@ import RegisterForm from "../components/Forms/RegisterForm";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (user) {
       navigate("/products");
     }
-  }, [isAuthenticated, navigate]);
+  }, [user, navigate]);
 
   return (
     <div className="flex flex-col">

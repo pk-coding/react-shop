@@ -7,13 +7,13 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const fromRegister = location.state?.fromRegister;
-  const { isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (user) {
       navigate("/products");
     }
-  }, [isAuthenticated, navigate]);
+  }, [user, navigate]);
 
   return (
     <div className="flex flex-col">
