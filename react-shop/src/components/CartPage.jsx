@@ -19,6 +19,11 @@ const CartPage = () => {
     return products?.find((product) => product.id === id);
   };
 
+  // Obliczanie całkowitej wartości koszyka
+  const totalPrice = cartItems.reduce((total, item) => {
+    return total + item.price;
+  }, 0);
+
   return (
     <div className="cart-page p-4">
       <h1 className="text-green-500 text-xl font-semibold mb-4">Twój Koszyk</h1>
@@ -86,6 +91,13 @@ const CartPage = () => {
             );
           })}
         </ul>
+      )}
+
+      {cartItems.length > 0 && (
+        <div className="p-6 flex justify-end items-center text-green-600 text-2xl font-semibold gap-4">
+          <span>Łączna wartość:</span>
+          <span>{totalPrice.toFixed(2)} zł</span>
+        </div>
       )}
     </div>
   );
