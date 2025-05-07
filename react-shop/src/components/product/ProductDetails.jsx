@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles/ProductList.module.css";
+import useCart from "../../hooks/useCart";
 
 const ProductDetails = ({ productId }) => {
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { cartItems, addToCart, removeFromCart } = useCart();
+  const buttonRef = useRef(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -41,11 +44,41 @@ const ProductDetails = ({ productId }) => {
     return <div className={styles.detailsDiv}>Ładowanie produktu...</div>;
   }
 
+  const isProductInCart = cartItems.some((item) => item.id === product.id);
+
+  const handleClick = () => {
+    if (isProductInCart) {
+      removeFromCart(product);
+    } else {
+      addToCart(product);
+    }
+    if (buttonRef.current) {
+      buttonRef.current.blur();
+    }
+  };
+
   return (
     <div className={styles.detailsDiv}>
-      <button onClick={() => navigate(-1)} className="mb-4">
-        ← Wstecz
-      </button>
+      <div className="mb-4">
+        <button
+          className="w-[50%] p-2.5 text-green transition-colors duration-200 focus:outline-none"
+          onClick={() => navigate(-1)}
+        >
+          ← Wstecz
+        </button>
+        <button
+          ref={buttonRef}
+          onClick={handleClick}
+          className={`w-[50%] p-2.5 text-green transition-colors duration-200 focus:outline-none ${
+            isProductInCart
+              ? "bg-red-500 hover:bg-red-600"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
+        >
+          {isProductInCart ? "Usuń z koszyka" : "Dodaj do koszyka"}
+        </button>
+      </div>
+
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <strong>Produkt:</strong>
         <img
@@ -54,9 +87,9 @@ const ProductDetails = ({ productId }) => {
           style={{ width: "30px", height: "30px" }}
         />
       </div>
-      {product.title}
+      <p>{product.title}</p>
       <strong>Opis:</strong>
-      {product.description}
+      <p>{product.description}</p>
     </div>
   );
 };

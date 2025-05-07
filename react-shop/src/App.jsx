@@ -6,20 +6,25 @@ import RegisterPage from "./routes/Register";
 import ProductDetailsPage from "./routes/ProductsDetails";
 import AddNewProductPage from "./routes/AddNewProduct";
 import PrivateRoute from "./routes/PrivateRoute";
-import MainLayout from "./layouts/MainLayout";
+import ProtectedLayout from "./layouts/ProtectedLayout";
 import PublicLayout from "./layouts/PublicLayout";
+import CartPageRoute from "./routes/CartPageRoute";
 import "./App.css";
 
 function App() {
   return (
     <Routes>
+      {/* Publiczne trasy */}
       <Route element={<PublicLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Route>
 
-      <Route element={<MainLayout />}>
+      {/* Chronione trasy */}
+      <Route element={<ProtectedLayout />}>
         <Route path="/" element={<HomePage />} />
+
+        {/* Inne trasy dla zalogowanych użytkowników */}
         <Route
           path="products"
           element={
@@ -41,6 +46,15 @@ function App() {
           element={
             <PrivateRoute>
               <AddNewProductPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="cart"
+          element={
+            <PrivateRoute>
+              <CartPageRoute />
             </PrivateRoute>
           }
         />

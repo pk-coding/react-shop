@@ -1,24 +1,55 @@
 import { Link } from "react-router-dom";
+import { useRef } from "react";
+import useCart from "../../hooks/useCart";
 
 const ProductCard = ({ product }) => {
+  const { cartItems, addToCart, removeFromCart } = useCart();
+  const isProductInCart = cartItems.some((item) => item.id === product.id);
+
+  const buttonRef = useRef(null);
+
+  const handleClick = () => {
+    if (isProductInCart) {
+      removeFromCart(product);
+    } else {
+      addToCart(product);
+    }
+    if (buttonRef.current) {
+      buttonRef.current.blur();
+    }
+  };
+
   return (
-    <div className="flex w-full p-2.5">
+    <div className="flex w-full p-2.5 items-center">
       <img
         src={product.image}
         alt="Obraz produktu"
-        style={{ width: "50px", height: "50px" }}
-        className="flex w-[20%] p-2.5"
+        className="w-[10%] max-w-[50px] h-auto p-2.5 object-contain"
       />
+
       <Link
         to={`/product/${product.id}`}
         title="Kliknij aby zobaczyć opis"
-        className="flex w-[70%] justify-start items-start cursor-pointer p-2.5"
+        className="w-[50%] p-2.5"
       >
         {product.title}
       </Link>
-      <p className="flex w-[10%] justify-center items-center p-2.5">
-        {product.price.toFixed(2)}zł
-      </p>
+
+      <p className="w-[15%] p-2.5 text-center">{product.price.toFixed(2)} zł</p>
+
+      <button
+        ref={buttonRef}
+        onClick={handleClick}
+        className={`w-[25%] p-2.5 text-green transition-colors duration-200 
+          focus:outline-none focus:ring-0 focus:border-none
+          ${
+            isProductInCart
+              ? "bg-red-500 hover:bg-red-600"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
+      >
+        {isProductInCart ? "Usuń z koszyka" : "Dodaj do koszyka"}
+      </button>
     </div>
   );
 };

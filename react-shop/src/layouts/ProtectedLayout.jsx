@@ -1,12 +1,14 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import useCart from "../hooks/useCart";
 import LogontButton from "../components/LogontButton";
 
 const name = "Paweł K.";
 const address = { address: "Toruń" };
 
-const MainLayout = () => {
+const ProtectedLayout = () => {
   const { user } = useAuth();
+  const { cartItems } = useCart();
 
   return (
     <>
@@ -42,6 +44,17 @@ const MainLayout = () => {
 
       {user ? <LogontButton /> : ""}
 
+      {user && cartItems.length > 0 && (
+        <div>
+          <NavLink to="/cart">
+            <p className="text-green-600 font-semibold p-4">
+              Produktów w koszyku: {cartItems.length}{" "}
+              <strong>[Sprawdź szczegóły]</strong>
+            </p>
+          </NavLink>
+        </div>
+      )}
+
       <main className="p-4">
         <Outlet />
       </main>
@@ -58,4 +71,4 @@ const MainLayout = () => {
   );
 };
 
-export default MainLayout;
+export default ProtectedLayout;
