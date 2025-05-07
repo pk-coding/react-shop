@@ -6,7 +6,7 @@ const PublicLayout = () => {
 
   return (
     <>
-      <header className="flex justify-between items-center p-4 bg-gray-100">
+      <header className="header">
         <div className="flex space-x-4">
           <NavLink to="/">Home</NavLink>
           {pathname === "/login" && (
@@ -17,7 +17,7 @@ const PublicLayout = () => {
         <div className="text-xl font-bold">React Shop</div>
       </header>
 
-      <main className="p-4">
+      <main className="main">
         <Outlet />
       </main>
     </>

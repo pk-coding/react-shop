@@ -56,6 +56,76 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+body.light {
+  --bg-color: #ffffff;
+  --text-color: #1f2937;
+  --link-color: #1d4ed8;
+  --accent-color: #22c55e;
+  --header-bg: #f3f4f6;
+  --footer-bg: #f3f4f6;
+}
+
+body.dark {
+  --bg-color: #1f2937;
+  --text-color: #f3f4f6;
+  --link-color: #60a5fa;
+  --accent-color: #10b981;
+  --header-bg: #111827;
+  --footer-bg: #111827;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: sans-serif;
+}
+
+.header {
+  background-color: var(--header-bg);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer {
+  background-color: var(--footer-bg);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main {
+  padding: 1rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+body.light button {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+body.dark button {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+body.dark button:hover {
+  background-color: #444;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
