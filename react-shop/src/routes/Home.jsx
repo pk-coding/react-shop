@@ -1,8 +1,6 @@
+import Home from "../components/Home";
+
 const HomePage = () => {
-  return (
-    <div style={{ color: "green" }}>
-      <h1 className="text-center">Witaj w naszym sklepie :)</h1>
-    </div>
-  );
+  return <Home />;
 };
 export default HomePage;

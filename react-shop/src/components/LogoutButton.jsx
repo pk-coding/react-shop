@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
-const LogontButton = () => {
+const LogoutButton = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -11,13 +11,10 @@ const LogontButton = () => {
   };
 
   return (
-    <button
-      onClick={handleLogout}
-      className="w-full text-red-600 px-4 py-2 rounded"
-    >
+    <button onClick={handleLogout} className="text-red-600 rounded">
       Wyloguj się
     </button>
   );
 };
 
-export default LogontButton;
+export default LogoutButton;

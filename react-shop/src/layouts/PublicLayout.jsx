@@ -1,26 +1,19 @@
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const PublicLayout = () => {
-  const location = useLocation();
-  const pathname = location.pathname;
-
   return (
     <>
-      <header className="header">
-        <div className="flex space-x-4">
-          <NavLink to="/">Home</NavLink>
-          {pathname === "/login" && (
-            <NavLink to="/register">Rejestracja</NavLink>
-          )}
-          {pathname === "/register" && <NavLink to="/login">Logowanie</NavLink>}
-        </div>
-        <div className="text-xl font-bold">React Shop</div>
-      </header>
+      <Header />
 
       <main className="main">
         <Outlet />
       </main>
+
+      <Footer />
     </>
   );
 };
+
 export default PublicLayout;

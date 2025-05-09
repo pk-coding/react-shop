@@ -2,8 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 import useSWR from "swr";
 import { fetcher } from "../utils/fetch";
 import useCart from "../hooks/useCart";
+import Loader from "./Loader";
 
-const CartPage = () => {
+const Cart = () => {
   const { cartItems, removeFromCart, clearCart } = useCart();
   const navigate = useNavigate();
   const {
@@ -12,23 +13,28 @@ const CartPage = () => {
     error,
   } = useSWR("https://fakestoreapi.com/products", fetcher);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loader />;
   if (error) return <div>Failed to load</div>;
 
   const getProductDetails = (id) => {
     return products?.find((product) => product.id === id);
   };
 
-  // Obliczanie całkowitej wartości koszyka
   const totalPrice = cartItems.reduce((total, item) => {
     return total + item.price;
   }, 0);
 
   return (
-    <div className="cart-page p-4">
+    <div className="cart-page p-2">
       <h1 className="text-green-500 text-xl font-semibold mb-4">Twój Koszyk</h1>
 
       <div className="w-full flex justify-end items-center gap-4 mb-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="text-blue-600 hover:underline text-sm"
+        >
+          ← Wstecz
+        </button>
         <button
           onClick={() => navigate("/products")}
           className="text-blue-600 hover:underline text-sm"
@@ -57,14 +63,14 @@ const CartPage = () => {
             return (
               <li
                 key={item.id}
-                className="border p-4 rounded flex items-center gap-4"
+                className="border p-2 rounded flex justify-around items-center gap-4"
               >
                 <img
                   src={item.image}
                   alt={item.title}
                   className="w-16 h-16 object-contain"
                 />
-                <div className="flex flex-col w-[50%] p-2.5">
+                <div className="flex flex-col w-[50%] p-2">
                   <Link
                     to={`/product/${item.id}`}
                     title="Kliknij aby zobaczyć opis"
@@ -73,7 +79,7 @@ const CartPage = () => {
                     {item.title}
                   </Link>
                   {productDetails && (
-                    <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                    <p className="text-xs text-gray-600 line-clamp-2">
                       {productDetails.description}
                     </p>
                   )}
@@ -103,4 +109,4 @@ const CartPage = () => {
   );
 };
 
-export default CartPage;
+export default Cart;

@@ -1,33 +1,15 @@
-import { useEffect, useState, useRef } from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "../../styles/ProductList.module.css";
 import useCart from "../../hooks/useCart";
+import { useProductDetails } from "../../hooks/useProductDetails";
+import Loader from "../Loader";
+import styles from "../../styles/ProductList.module.css";
 
 const ProductDetails = ({ productId }) => {
-  const [product, setProduct] = useState(null);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const { cartItems, addToCart, removeFromCart } = useCart();
   const buttonRef = useRef(null);
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await fetch(
-          `https://fakestoreapi.com/products/${productId}`
-        );
-        if (!res.ok) {
-          throw new Error(`Nie znaleziono produktu (kod: ${res.status})`);
-        }
-        const data = await res.json();
-        setProduct(data);
-      } catch (error) {
-        setError(error.message);
-      }
-    };
-
-    fetchProduct();
-  }, [productId]);
+  const { data: product, error } = useProductDetails(productId);
+  const { cartItems, addToCart, removeFromCart } = useCart();
+  const navigate = useNavigate();
 
   if (error) {
     return (
@@ -41,7 +23,7 @@ const ProductDetails = ({ productId }) => {
   }
 
   if (!product) {
-    return <div className={styles.detailsDiv}>Ładowanie produktu...</div>;
+    return <Loader />;
   }
 
   const isProductInCart = cartItems.some((item) => item.id === product.id);
