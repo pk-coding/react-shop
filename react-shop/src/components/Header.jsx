@@ -8,7 +8,7 @@ import { ThemeContext } from "../context/ThemeContext";
 const Header = () => {
   const { pathname } = useLocation();
   const { user } = useAuth();
-  const { cartSum } = useCart();
+  const { totalPrice } = useCart();
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
@@ -29,7 +29,7 @@ const Header = () => {
           <div className="w-1/2 flex justify-end items-center gap-4">
             <NavLink to="/cart">
               <p className="text-pink-600">
-                Wartość przedmiotów w koszyku: {cartSum}
+                Wartość przedmiotów w koszyku: {totalPrice}
               </p>
             </NavLink>
             <span className="font-bold text-xl">React Shop</span>

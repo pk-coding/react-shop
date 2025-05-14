@@ -5,7 +5,7 @@ import useCart from "../hooks/useCart";
 import Loader from "./Loader";
 
 const Cart = () => {
-  const { cartItems, removeFromCart, clearCart } = useCart();
+  const { cartItems, removeFromCart, clearCart, totalPrice } = useCart();
   const navigate = useNavigate();
   const {
     data: products,
@@ -20,9 +20,6 @@ const Cart = () => {
     return products?.find((product) => product.id === id);
   };
 
-  const totalPrice = cartItems.reduce((total, item) => {
-    return total + item.price;
-  }, 0);
 
   return (
     <div className="cart-page p-2">
@@ -88,7 +85,7 @@ const Cart = () => {
                   {item.price.toFixed(2)} zł
                 </span>
                 <button
-                  onClick={() => removeFromCart(item)}
+                  onClick={() => removeFromCart(item.id)}
                   className="bg-red-500 hover:bg-red-600 text-green-600 px-3 py-1 rounded text-sm"
                 >
                   Usuń
@@ -102,7 +99,7 @@ const Cart = () => {
       {cartItems.length > 0 && (
         <div className="p-6 flex justify-end items-center text-green-600 text-2xl font-semibold gap-4">
           <span>Łączna wartość:</span>
-          <span>{totalPrice.toFixed(2)} zł</span>
+          <span>{totalPrice} zł</span>
         </div>
       )}
     </div>

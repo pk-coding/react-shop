@@ -30,7 +30,7 @@ const ProductDetails = ({ productId }) => {
 
   const handleClick = () => {
     if (isProductInCart) {
-      removeFromCart(product);
+      removeFromCart(product.id);
     } else {
       addToCart(product);
     }

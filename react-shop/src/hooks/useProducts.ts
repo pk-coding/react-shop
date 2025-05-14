@@ -1,32 +1,35 @@
 import { useMemo } from "react";
 import useSWR from "swr";
 import { fetcher } from "../utils/fetch";
+import { Product } from "../types/product";
+import { ApiResponse } from "../types/api";
+import { SortOption } from "../types/unions";
 
 const useProducts = (
-  sortState,
-  priceMin,
-  priceMax,
-  selectedCategory,
-  searchTerm,
-  debounceSearchTerm,
-  setSortState,
-  setPriceMin,
-  setPriceMax,
-  setSelectedCategory,
-  setSearchTerm
+  sortState: SortOption,
+  priceMin: number | undefined,
+  priceMax: number | undefined,
+  selectedCategory: string,
+  searchTerm: string,
+  debounceSearchTerm: string,
+  setSortState: React.Dispatch<React.SetStateAction<SortOption>>,
+  setPriceMin: React.Dispatch<React.SetStateAction<number | undefined>>,
+  setPriceMax: React.Dispatch<React.SetStateAction<number | undefined>>,
+  setSelectedCategory: React.Dispatch<React.SetStateAction<string>>,
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>,
 ) => {
-  const { data, isLoading, error } = useSWR(
+  const { data, isLoading, error }: ApiResponse<Product[]> = useSWR(
     "https://fakestoreapi.com/products",
     fetcher
   );
 
-  const filteredAndSortedProducts = useMemo(() => {
+  const filteredAndSortedProducts: Product[] = useMemo(() => {
     if (!data) return [];
 
     const filteredList = data.filter((product) => {
       return (
-        (product.price >= priceMin || !priceMin) &&
-        (product.price <= priceMax || !priceMax) &&
+        (product.price >= (priceMin || 0)) &&
+        (product.price <= (priceMax || Infinity)) &&
         (selectedCategory === "all" || product.category === selectedCategory) &&
         (!searchTerm ||
           product?.title?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
@@ -50,8 +53,8 @@ const useProducts = (
 
   const resetFilters = () => {
     setSortState("none");
-    setPriceMin(null);
-    setPriceMax(null);
+    setPriceMin(undefined);
+    setPriceMax(undefined);
     setSelectedCategory("all");
     setSearchTerm("");
   };

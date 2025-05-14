@@ -1,23 +1,29 @@
 import { useState } from "react";
 import { useLocation, NavLink } from "react-router-dom";
 import ProductCard from "./ProductCard";
-import ProductDetails from "./ProductDetails";
 import Loader from "../Loader";
 import useProducts from "../../hooks/useProducts";
 import useCategories from "../../hooks/useCategories";
 import useDebounce from "../../hooks/useCategories";
 import styles from "../../styles/ProductList.module.css";
+import { Product } from "../../types/product";
+import { SortOption } from "../../types/unions";
+
+type LocationState = {
+  fromLogin?: boolean;
+};
 
 const ProductList = () => {
-  const [sortState, setSortState] = useState("none");
-  const [priceMin, setPriceMin] = useState(null);
-  const [priceMax, setPriceMax] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [confirmMessage, setConfirmMessage] = useState(true);
+  const [sortState, setSortState] = useState<SortOption>("none");
+  const [priceMin, setPriceMin] = useState<number | undefined>(undefined);
+  const [priceMax, setPriceMax] = useState<number | undefined>(undefined);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [confirmMessage, setConfirmMessage] = useState<boolean>(true);
   const location = useLocation();
-  const fromLogin = location.state?.fromLogin;
-  const debounceSearchTerm = useDebounce(searchTerm);
+  const state = location.state as LocationState | null;
+  const fromLogin = state?.fromLogin;
+  const debounceSearchTerm = useDebounce<string>(searchTerm);
   const { data, isLoading, error, filteredAndSortedProducts, resetFilters } =
     useProducts(
       sortState,
@@ -76,7 +82,7 @@ const ProductList = () => {
             type="number"
             value={priceMin ?? ""}
             onChange={(e) =>
-              setPriceMin(e.target.value ? Number(e.target.value) : null)
+              setPriceMin(e.target.value ? Number(e.target.value) : undefined)
             }
             className="p-2 border rounded-md w-full"
           />
@@ -89,7 +95,7 @@ const ProductList = () => {
             type="number"
             value={priceMax ?? ""}
             onChange={(e) =>
-              setPriceMax(e.target.value ? Number(e.target.value) : null)
+              setPriceMax(e.target.value ? Number(e.target.value) : undefined)
             }
             className="p-2 border rounded-md w-full"
           />
@@ -102,7 +108,7 @@ const ProductList = () => {
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
           >
-            {categoryOptions?.map((category) => (
+            {categoryOptions?.map((category: string) => (
               <option key={category} value={category}>
                 {category === "all" ? "Wszystkie kategorie" : category}
               </option>
@@ -115,7 +121,7 @@ const ProductList = () => {
           <select
             className="p-2 border rounded-md w-full"
             value={sortState}
-            onChange={(e) => setSortState(e.target.value)}
+            onChange={(e) => setSortState(e.target.value as SortOption)}
           >
             <option value="none">Brak sortowania</option>
             <option value="price_asc">Cena rosnąco</option>
@@ -134,7 +140,7 @@ const ProductList = () => {
       </div>
 
       <div className="space-y-4">
-        {filteredAndSortedProducts.map((product) => (
+        {filteredAndSortedProducts.map((product: Product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

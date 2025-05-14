@@ -1,16 +1,18 @@
 import { Link } from "react-router-dom";
 import { useRef } from "react";
 import useCart from "../../hooks/useCart";
+import { Product } from "../../types/product";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product }: { product: Product }) => {
   const { cartItems, addToCart, removeFromCart } = useCart();
-  const isProductInCart = cartItems.some((item) => item.id === product.id);
-
-  const buttonRef = useRef(null);
+  const isProductInCart = cartItems.some(
+    (item: Product) => item.id === product.id
+  );
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleClick = () => {
     if (isProductInCart) {
-      removeFromCart(product);
+      removeFromCart(product.id);
     } else {
       addToCart(product);
     }
@@ -42,10 +44,9 @@ const ProductCard = ({ product }) => {
         onClick={handleClick}
         className={`w-[25%] p-2.5 text-green transition-colors duration-200 
           focus:outline-none focus:ring-0 focus:border-none
-          ${
-            isProductInCart
-              ? "bg-red-500 hover:bg-red-600"
-              : "bg-blue-500 hover:bg-blue-600"
+          ${isProductInCart
+            ? "bg-red-500 hover:bg-red-600"
+            : "bg-blue-500 hover:bg-blue-600"
           }`}
       >
         {isProductInCart ? "Usuń z koszyka" : "Dodaj do koszyka"}
